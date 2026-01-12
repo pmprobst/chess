@@ -41,6 +41,53 @@ You can use the following commands to build, test, package, and run your code.
 
 These commands are configured by the `pom.xml` (Project Object Model) files. There is a POM file in the root of the project, and one in each of the modules. The root POM defines any global dependencies and references the module POM files.
 
+## Building and Running Tests
+
+### Building the Project
+
+To compile all modules without running tests:
+
+```sh
+mvn compile
+```
+
+To build the project and create JAR files (this will also run tests by default):
+
+```sh
+mvn package
+```
+
+To build JAR files without running tests:
+
+```sh
+mvn package -DskipTests
+```
+
+### Running Tests
+
+To run all tests across all modules:
+
+```sh
+mvn test
+```
+
+To run tests for a specific module, use the `-pl` (project list) flag:
+
+```sh
+# Run tests for the shared module
+mvn -pl shared test
+
+# Run tests for the client module
+mvn -pl client test
+
+# Run tests for the server module
+mvn -pl server test
+```
+
+### Test Output
+
+Test results are generated in the `target/surefire-reports/` directory within each module.
+
 ## Running the program using Java
 
 Once you have compiled your project into an uber jar, you can execute it with the following command.
