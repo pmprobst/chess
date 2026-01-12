@@ -97,3 +97,8 @@ java -jar client/target/client-jar-with-dependencies.jar
 
 ♕ 240 Chess Client: chess.ChessPiece@7852e922
 ```
+
+###Disclaimer
+
+Generative AI has been used to help write documentation and comments for this 
+project. No Generative AI was used in the writing of any code.
