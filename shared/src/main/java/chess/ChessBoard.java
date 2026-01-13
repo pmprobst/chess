@@ -8,8 +8,9 @@ package chess;
  */
 public class ChessBoard {
 
+    private ChessPiece[][] squares;
     public ChessBoard() {
-        
+        squares = new ChessPiece[8][8];
     }
 
     /**
@@ -19,7 +20,18 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        throw new RuntimeException("Not implemented");
+        if (position == null) {
+            throw new IllegalArgumentException("position cannot be null");
+        }
+
+        int row = position.getRow;
+        int col = position.getColumn;
+
+        if (row <1 || row > 8 || col < 1 || col > 8) {
+            throw new IllegalArgumentException("position out of bounds: " + row + "," + col);
+        }
+
+        squares[row - 1][col - 1] = piece;
     }
 
     /**
