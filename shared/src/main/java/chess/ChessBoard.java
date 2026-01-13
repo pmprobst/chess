@@ -24,8 +24,8 @@ public class ChessBoard {
             throw new IllegalArgumentException("position cannot be null");
         }
 
-        int row = position.getRow;
-        int col = position.getColumn;
+        int row = position.getRow();
+        int col = position.getColumn();
 
         if (row <1 || row > 8 || col < 1 || col > 8) {
             throw new IllegalArgumentException("position out of bounds: " + row + "," + col);
@@ -42,7 +42,18 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        throw new RuntimeException("Not implemented");
+        if (position == null) {
+            throw new IllegalArgumentException("position cannot be null");
+        }
+
+        int row = position.getRow();
+        int col = position.getColumn();
+
+        if (row <1 || row > 8 || col < 1 || col > 8) {
+            throw new IllegalArgumentException("position out of bounds: " + row + "," + col);
+        }
+
+        return squares[row - 1][col - 1];
     }
 
     /**
