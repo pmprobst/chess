@@ -100,5 +100,4 @@ java -jar client/target/client-jar-with-dependencies.jar
 
 ###Disclaimer
 
-Generative AI has been used to help write documentation and comments for this 
-project. No Generative AI was used in the writing of any code.
+No Generative AI was used in the writing of any code.
