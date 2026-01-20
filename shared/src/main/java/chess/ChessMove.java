@@ -23,14 +23,14 @@ public class ChessMove {
      * @return ChessPosition of starting location
      */
     public ChessPosition getStartPosition() {
-        throw new RuntimeException("Not implemented");
+        return startPosition;
     }
 
     /**
      * @return ChessPosition of ending location
      */
     public ChessPosition getEndPosition() {
-        throw new RuntimeException("Not implemented");
+        return endPosition;
     }
 
     /**
@@ -40,6 +40,23 @@ public class ChessMove {
      * @return Type of piece to promote a pawn to, or null if no promotion
      */
     public ChessPiece.PieceType getPromotionPiece() {
-        throw new RuntimeException("Not implemented");
+        return promotionPiece;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ChessMove other)) return false;
+        return startPosition.equals(other.startPosition) &&
+               endPosition.equals(other.endPosition) &&
+               promotionPiece == other.promotionPiece;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = startPosition.hashCode();
+        result = 31 * result + endPosition.hashCode();
+        result = 31 * result + (promotionPiece != null ? promotionPiece.hashCode() : 0);
+        return result;
     }
 }
