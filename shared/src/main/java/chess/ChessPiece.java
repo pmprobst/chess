@@ -78,6 +78,8 @@ public class ChessPiece {
                 return queenMoves(board, myPosition);
             case KING:
                 return kingMoves(board, myPosition);
+            case KNIGHT:
+                return knightMoves(board, myPosition);
             default:
                 // Other piece types will be implemented one at a time
                 return moves;
@@ -255,6 +257,37 @@ public class ChessPiece {
                 ChessPiece pieceAtEnd = board.getPiece(endPos);
                 
                 // Can move to empty square or capture enemy piece
+                if (pieceAtEnd == null || pieceAtEnd.getTeamColor() != pieceColor) {
+                    moves.add(new ChessMove(myPosition, endPos, null));
+                }
+            }
+        }
+        
+        return moves;
+    }
+    
+    /**
+     * Calculates all valid moves for a knight (L-shaped moves)
+     */
+    private Collection<ChessMove> knightMoves(ChessBoard board, ChessPosition myPosition) {
+        Collection<ChessMove> moves = new ArrayList<>();
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+        
+        // All 8 possible L-shaped moves
+        int[] rowOffsets = {2, 2, -2, -2, 1, 1, -1, -1};
+        int[] colOffsets = {1, -1, 1, -1, 2, -2, 2, -2};
+        
+        for (int i = 0; i < 8; i++) {
+            int newRow = row + rowOffsets[i];
+            int newCol = col + colOffsets[i];
+            
+            // Check if within board bounds
+            if (newRow >= 1 && newRow <= 8 && newCol >= 1 && newCol <= 8) {
+                ChessPosition endPos = new ChessPosition(newRow, newCol);
+                ChessPiece pieceAtEnd = board.getPiece(endPos);
+                
+                // Can move to empty square or capture enemy piece (knight can jump over pieces)
                 if (pieceAtEnd == null || pieceAtEnd.getTeamColor() != pieceColor) {
                     moves.add(new ChessMove(myPosition, endPos, null));
                 }
