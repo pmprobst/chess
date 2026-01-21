@@ -80,8 +80,9 @@ public class ChessPiece {
                 return kingMoves(board, myPosition);
             case KNIGHT:
                 return knightMoves(board, myPosition);
+            case PAWN:
+                return pawnMoves(board, myPosition);
             default:
-                // Other piece types will be implemented one at a time
                 return moves;
         }
     }
@@ -290,6 +291,82 @@ public class ChessPiece {
                 // Can move to empty square or capture enemy piece (knight can jump over pieces)
                 if (pieceAtEnd == null || pieceAtEnd.getTeamColor() != pieceColor) {
                     moves.add(new ChessMove(myPosition, endPos, null));
+                }
+            }
+        }
+        
+        return moves;
+    }
+    
+    /**
+     * Calculates all valid moves for a pawn
+     */
+    private Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition) {
+        Collection<ChessMove> moves = new ArrayList<>();
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+        
+        boolean isWhite = (pieceColor == ChessGame.TeamColor.WHITE);
+        int forwardDirection = isWhite ? 1 : -1;
+        int startingRow = isWhite ? 2 : 7;
+        int promotionRow = isWhite ? 8 : 1;
+        
+        // Move forward 1 square
+        int newRow = row + forwardDirection;
+        if (newRow >= 1 && newRow <= 8) {
+            ChessPosition forwardPos = new ChessPosition(newRow, col);
+            ChessPiece pieceAtForward = board.getPiece(forwardPos);
+            
+            if (pieceAtForward == null) {
+                // Empty square - can move forward
+                if (newRow == promotionRow) {
+                    // Promotion - generate moves for all 4 promotion types
+                    moves.add(new ChessMove(myPosition, forwardPos, PieceType.QUEEN));
+                    moves.add(new ChessMove(myPosition, forwardPos, PieceType.ROOK));
+                    moves.add(new ChessMove(myPosition, forwardPos, PieceType.BISHOP));
+                    moves.add(new ChessMove(myPosition, forwardPos, PieceType.KNIGHT));
+                } else {
+                    // Normal forward move
+                    moves.add(new ChessMove(myPosition, forwardPos, null));
+                }
+            }
+        }
+        
+        // Move forward 2 squares (only from starting position)
+        if (row == startingRow) {
+            int twoSquaresRow = row + 2 * forwardDirection;
+            if (twoSquaresRow >= 1 && twoSquaresRow <= 8) {
+                ChessPosition oneSquarePos = new ChessPosition(row + forwardDirection, col);
+                ChessPosition twoSquaresPos = new ChessPosition(twoSquaresRow, col);
+                
+                // Both squares must be empty
+                if (board.getPiece(oneSquarePos) == null && board.getPiece(twoSquaresPos) == null) {
+                    moves.add(new ChessMove(myPosition, twoSquaresPos, null));
+                }
+            }
+        }
+        
+        // Capture diagonally forward (left and right)
+        for (int colOffset : new int[]{-1, 1}) {
+            int captureCol = col + colOffset;
+            int captureRow = row + forwardDirection;
+            
+            if (captureRow >= 1 && captureRow <= 8 && captureCol >= 1 && captureCol <= 8) {
+                ChessPosition capturePos = new ChessPosition(captureRow, captureCol);
+                ChessPiece pieceAtCapture = board.getPiece(capturePos);
+                
+                if (pieceAtCapture != null && pieceAtCapture.getTeamColor() != pieceColor) {
+                    // Enemy piece - can capture
+                    if (captureRow == promotionRow) {
+                        // Promotion capture - generate moves for all 4 promotion types
+                        moves.add(new ChessMove(myPosition, capturePos, PieceType.QUEEN));
+                        moves.add(new ChessMove(myPosition, capturePos, PieceType.ROOK));
+                        moves.add(new ChessMove(myPosition, capturePos, PieceType.BISHOP));
+                        moves.add(new ChessMove(myPosition, capturePos, PieceType.KNIGHT));
+                    } else {
+                        // Normal capture
+                        moves.add(new ChessMove(myPosition, capturePos, null));
+                    }
                 }
             }
         }
