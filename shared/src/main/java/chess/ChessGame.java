@@ -112,4 +112,19 @@ public class ChessGame {
     public ChessBoard getBoard() {
         return board;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ChessGame other)) return false;
+        if (teamTurn != other.teamTurn) return false;
+        return board != null ? board.equals(other.board) : other.board == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (board != null ? board.hashCode() : 0);
+        result = 31 * result + (teamTurn != null ? teamTurn.hashCode() : 0);
+        return result;
+    }
 }
