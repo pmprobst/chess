@@ -74,6 +74,10 @@ public class ChessPiece {
                 return rookMoves(board, myPosition);
             case BISHOP:
                 return bishopMoves(board, myPosition);
+            case QUEEN:
+                return queenMoves(board, myPosition);
+            case KING:
+                return kingMoves(board, myPosition);
             default:
                 // Other piece types will be implemented one at a time
                 return moves;
@@ -145,6 +149,115 @@ public class ChessPiece {
                     moves.add(new ChessMove(myPosition, endPos, null));
                 }
                 break;
+            }
+        }
+        
+        return moves;
+    }
+    
+    /**
+     * Calculates all valid moves for a bishop
+     */
+    private Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition) {
+        Collection<ChessMove> moves = new ArrayList<>();
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+        
+        // Move up-right (row++, col++)
+        for (int r = row + 1, c = col + 1; r <= 8 && c <= 8; r++, c++) {
+            ChessPosition endPos = new ChessPosition(r, c);
+            ChessPiece pieceAtEnd = board.getPiece(endPos);
+            if (pieceAtEnd == null) {
+                moves.add(new ChessMove(myPosition, endPos, null));
+            } else {
+                if (pieceAtEnd.getTeamColor() != pieceColor) {
+                    moves.add(new ChessMove(myPosition, endPos, null));
+                }
+                break;
+            }
+        }
+        
+        // Move up-left (row++, col--)
+        for (int r = row + 1, c = col - 1; r <= 8 && c >= 1; r++, c--) {
+            ChessPosition endPos = new ChessPosition(r, c);
+            ChessPiece pieceAtEnd = board.getPiece(endPos);
+            if (pieceAtEnd == null) {
+                moves.add(new ChessMove(myPosition, endPos, null));
+            } else {
+                if (pieceAtEnd.getTeamColor() != pieceColor) {
+                    moves.add(new ChessMove(myPosition, endPos, null));
+                }
+                break;
+            }
+        }
+        
+        // Move down-right (row--, col++)
+        for (int r = row - 1, c = col + 1; r >= 1 && c <= 8; r--, c++) {
+            ChessPosition endPos = new ChessPosition(r, c);
+            ChessPiece pieceAtEnd = board.getPiece(endPos);
+            if (pieceAtEnd == null) {
+                moves.add(new ChessMove(myPosition, endPos, null));
+            } else {
+                if (pieceAtEnd.getTeamColor() != pieceColor) {
+                    moves.add(new ChessMove(myPosition, endPos, null));
+                }
+                break;
+            }
+        }
+        
+        // Move down-left (row--, col--)
+        for (int r = row - 1, c = col - 1; r >= 1 && c >= 1; r--, c--) {
+            ChessPosition endPos = new ChessPosition(r, c);
+            ChessPiece pieceAtEnd = board.getPiece(endPos);
+            if (pieceAtEnd == null) {
+                moves.add(new ChessMove(myPosition, endPos, null));
+            } else {
+                if (pieceAtEnd.getTeamColor() != pieceColor) {
+                    moves.add(new ChessMove(myPosition, endPos, null));
+                }
+                break;
+            }
+        }
+        
+        return moves;
+    }
+    
+    /**
+     * Calculates all valid moves for a queen (combines rook and bishop moves)
+     */
+    private Collection<ChessMove> queenMoves(ChessBoard board, ChessPosition myPosition) {
+        Collection<ChessMove> moves = new ArrayList<>();
+        // Queen moves like both a rook and a bishop
+        moves.addAll(rookMoves(board, myPosition));
+        moves.addAll(bishopMoves(board, myPosition));
+        return moves;
+    }
+    
+    /**
+     * Calculates all valid moves for a king (one square in any direction)
+     */
+    private Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition) {
+        Collection<ChessMove> moves = new ArrayList<>();
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+        
+        // All 8 possible directions: up, down, left, right, and 4 diagonals
+        int[] rowOffsets = {1, 1, 1, 0, 0, -1, -1, -1};
+        int[] colOffsets = {-1, 0, 1, -1, 1, -1, 0, 1};
+        
+        for (int i = 0; i < 8; i++) {
+            int newRow = row + rowOffsets[i];
+            int newCol = col + colOffsets[i];
+            
+            // Check if within board bounds
+            if (newRow >= 1 && newRow <= 8 && newCol >= 1 && newCol <= 8) {
+                ChessPosition endPos = new ChessPosition(newRow, newCol);
+                ChessPiece pieceAtEnd = board.getPiece(endPos);
+                
+                // Can move to empty square or capture enemy piece
+                if (pieceAtEnd == null || pieceAtEnd.getTeamColor() != pieceColor) {
+                    moves.add(new ChessMove(myPosition, endPos, null));
+                }
             }
         }
         
