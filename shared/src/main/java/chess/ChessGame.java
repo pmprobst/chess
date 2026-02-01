@@ -123,6 +123,19 @@ public class ChessGame {
         board.addPiece(move.getEndPosition(), toPlace);
     }
 
+    private ChessPosition findKing(ChessBoard board, TeamColor color) {
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition pos = new ChessPosition(row, col);
+                ChessPiece p = board.getPiece(pos);
+                if (p != null && p.getPieceType() == ChessPiece.PieceType.KING && p.getTeamColor() == color) {
+                    return pos;
+                }
+            }
+        }
+        return null;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
