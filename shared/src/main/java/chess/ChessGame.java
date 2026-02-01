@@ -136,6 +136,24 @@ public class ChessGame {
         return null;
     }
 
+    private boolean isInCheckOnBoard(ChessBoard board, TeamColor teamColor) {
+        ChessPosition kingPos = findKing(board, teamColor);
+        if (kingPos == null) return false;
+        TeamColor enemy = teamColor == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE;
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition pos = new ChessPosition(row, col);
+                ChessPiece p = board.getPiece(pos);
+                if (p != null && p.getTeamColor() == enemy) {
+                    for (ChessMove move : p.pieceMoves(board, pos)) {
+                        if (move.getEndPosition().equals(kingPos)) return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
