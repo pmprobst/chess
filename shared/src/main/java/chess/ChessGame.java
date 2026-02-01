@@ -113,6 +113,13 @@ public class ChessGame {
         return board;
     }
 
+    private void applyMoveToBoard(ChessBoard board, ChessMove move) {
+        ChessPiece piece = board.getPiece(move.getStartPosition());
+        if (piece == null) return;
+        board.addPiece(move.getStartPosition(), null);
+        board.addPiece(move.getEndPosition(), piece);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
