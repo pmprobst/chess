@@ -59,6 +59,22 @@ public class ChessBoard {
     }
 
     /**
+     * Returns a new board with the same piece placement as this board.
+     */
+    public ChessBoard copy() {
+        ChessBoard copy = new ChessBoard();
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPiece piece = squares[row - 1][col - 1];
+                if (piece != null) {
+                    copy.addPiece(new ChessPosition(row, col), piece);
+                }
+            }
+        }
+        return copy;
+    }
+
+    /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
      */
