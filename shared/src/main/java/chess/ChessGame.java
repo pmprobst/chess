@@ -117,7 +117,10 @@ public class ChessGame {
         ChessPiece piece = board.getPiece(move.getStartPosition());
         if (piece == null) return;
         board.addPiece(move.getStartPosition(), null);
-        board.addPiece(move.getEndPosition(), piece);
+        ChessPiece toPlace = move.getPromotionPiece() != null
+                ? new ChessPiece(piece.getTeamColor(), move.getPromotionPiece())
+                : piece;
+        board.addPiece(move.getEndPosition(), toPlace);
     }
 
     @Override
