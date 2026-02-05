@@ -60,6 +60,9 @@ public class ChessBoard {
 
     /**
      * Returns a new board with the same piece placement as this board.
+     * Piece references are shared; the board layout is independent.
+     *
+     * @return a copy of this board
      */
     public ChessBoard copy() {
         ChessBoard copy = new ChessBoard();

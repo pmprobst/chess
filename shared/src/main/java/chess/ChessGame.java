@@ -153,6 +153,13 @@ public class ChessGame {
         return board;
     }
 
+    /**
+     * Applies the given move to the board. Moves the piece from start to end;
+     * if the move specifies a promotion piece, places the promoted piece instead.
+     *
+     * @param board the board to modify
+     * @param move  the move to apply
+     */
     private void applyMoveToBoard(ChessBoard board, ChessMove move) {
         ChessPiece piece = board.getPiece(move.getStartPosition());
         if (piece == null) return;
@@ -163,6 +170,14 @@ public class ChessGame {
         board.addPiece(move.getEndPosition(), toPlace);
     }
 
+    /**
+     * Returns the position of the king of the given color on the board,
+     * or null if no king is found.
+     *
+     * @param board the board to search
+     * @param color the team color of the king to find
+     * @return the king's position, or null
+     */
     private ChessPosition findKing(ChessBoard board, TeamColor color) {
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
@@ -176,6 +191,14 @@ public class ChessGame {
         return null;
     }
 
+    /**
+     * Returns true if the given team's king could be captured by an opposing
+     * piece on the given board state.
+     *
+     * @param board     the board state to evaluate
+     * @param teamColor the team to check for being in check
+     * @return true if that team's king is under attack
+     */
     private boolean isInCheckOnBoard(ChessBoard board, TeamColor teamColor) {
         ChessPosition kingPos = findKing(board, teamColor);
         if (kingPos == null) return false;
