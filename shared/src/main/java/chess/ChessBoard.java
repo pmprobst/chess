@@ -22,17 +22,9 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        if (position == null) {
-            throw new IllegalArgumentException("position cannot be null");
-        }
-
+        validatePosition(position);
         int row = position.getRow();
         int col = position.getColumn();
-
-        if (row <1 || row > 8 || col < 1 || col > 8) {
-            throw new IllegalArgumentException("position out of bounds: " + row + "," + col);
-        }
-
         squares[row - 1][col - 1] = piece;
     }
 
@@ -44,18 +36,27 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
+        validatePosition(position);
+        int row = position.getRow();
+        int col = position.getColumn();
+        return squares[row - 1][col - 1];
+    }
+
+    /**
+     * Validates that a position is not null and within board bounds.
+     *
+     * @param position the position to validate
+     * @throws IllegalArgumentException if position is null or out of bounds
+     */
+    private void validatePosition(ChessPosition position) {
         if (position == null) {
             throw new IllegalArgumentException("position cannot be null");
         }
-
         int row = position.getRow();
         int col = position.getColumn();
-
-        if (row <1 || row > 8 || col < 1 || col > 8) {
+        if (row < 1 || row > 8 || col < 1 || col > 8) {
             throw new IllegalArgumentException("position out of bounds: " + row + "," + col);
         }
-
-        return squares[row - 1][col - 1];
     }
 
     /**
@@ -66,12 +67,9 @@ public class ChessBoard {
      */
     public ChessBoard copy() {
         ChessBoard copy = new ChessBoard();
-        for (int row = 1; row <= 8; row++) {
-            for (int col = 1; col <= 8; col++) {
-                ChessPiece piece = squares[row - 1][col - 1];
-                if (piece != null) {
-                    copy.addPiece(new ChessPosition(row, col), piece);
-                }
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                copy.squares[row][col] = squares[row][col];
             }
         }
         return copy;
