@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -41,8 +42,16 @@ public class ChessGame {
      */
     public enum TeamColor {
         WHITE,
-        BLACK
+        BLACK;
+
+        /** Returns the other team color. */
+        TeamColor opposite() {
+            return this == WHITE ? BLACK : WHITE;
+        }
     }
+
+    private static final int BOARD_MIN = 1;
+    private static final int BOARD_MAX = 8;
 
     /**
      * Gets a valid moves for a piece at the given location
@@ -157,8 +166,8 @@ public class ChessGame {
      * @return the king's position, or null
      */
     private ChessPosition findKing(ChessBoard board, TeamColor color) {
-        for (int row = 1; row <= 8; row++) {
-            for (int col = 1; col <= 8; col++) {
+        for (int row = BOARD_MIN; row <= BOARD_MAX; row++) {
+            for (int col = BOARD_MIN; col <= BOARD_MAX; col++) {
                 ChessPosition pos = new ChessPosition(row, col);
                 ChessPiece p = board.getPiece(pos);
                 if (p != null && p.getPieceType() == ChessPiece.PieceType.KING && p.getTeamColor() == color) {
@@ -180,9 +189,9 @@ public class ChessGame {
     private boolean isInCheckOnBoard(ChessBoard board, TeamColor teamColor) {
         ChessPosition kingPos = findKing(board, teamColor);
         if (kingPos == null) return false;
-        TeamColor enemy = teamColor == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE;
-        for (int row = 1; row <= 8; row++) {
-            for (int col = 1; col <= 8; col++) {
+        TeamColor enemy = teamColor.opposite();
+        for (int row = BOARD_MIN; row <= BOARD_MAX; row++) {
+            for (int col = BOARD_MIN; col <= BOARD_MAX; col++) {
                 ChessPosition pos = new ChessPosition(row, col);
                 ChessPiece p = board.getPiece(pos);
                 if (p != null && p.getTeamColor() == enemy) {
@@ -202,8 +211,8 @@ public class ChessGame {
      * @return true if any piece of that team has valid moves
      */
     private boolean hasAnyValidMove(TeamColor teamColor) {
-        for (int row = 1; row <= 8; row++) {
-            for (int col = 1; col <= 8; col++) {
+        for (int row = BOARD_MIN; row <= BOARD_MAX; row++) {
+            for (int col = BOARD_MIN; col <= BOARD_MAX; col++) {
                 ChessPosition pos = new ChessPosition(row, col);
                 ChessPiece p = board.getPiece(pos);
                 if (p != null && p.getTeamColor() == teamColor) {
@@ -219,14 +228,11 @@ public class ChessGame {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof ChessGame other)) return false;
-        if (teamTurn != other.teamTurn) return false;
-        return board != null ? board.equals(other.board) : other.board == null;
+        return teamTurn == other.teamTurn && Objects.equals(board, other.board);
     }
 
     @Override
     public int hashCode() {
-        int result = (board != null ? board.hashCode() : 0);
-        result = 31 * result + (teamTurn != null ? teamTurn.hashCode() : 0);
-        return result;
+        return Objects.hash(board, teamTurn);
     }
 }
