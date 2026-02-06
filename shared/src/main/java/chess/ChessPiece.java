@@ -4,24 +4,27 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * Represents a single chess piece
+ * A single chess piece with a team color and piece type (king, queen, rook, bishop, knight, pawn).
  * <p>
- * Note: You can add to this class, but you may not alter
- * signature of the existing methods.
+ * Note: You can add to this class, but you may not alter the signature of the existing methods.
  */
 public class ChessPiece {
 
     private final ChessGame.TeamColor pieceColor;
     private final ChessPiece.PieceType type;
 
+    /**
+     * Creates a piece of the given color and type.
+     *
+     * @param pieceColor the team (white or black)
+     * @param type       the kind of piece
+     */
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceColor = pieceColor;
         this.type = type;
     }
 
-    /**
-     * The various different chess piece options
-     */
+    /** The six types of chess pieces. */
     public enum PieceType {
         KING,
         QUEEN,
@@ -32,14 +35,18 @@ public class ChessPiece {
     }
 
     /**
-     * @return Which team this chess piece belongs to
+     * Returns which team this piece belongs to.
+     *
+     * @return WHITE or BLACK
      */
     public ChessGame.TeamColor getTeamColor() {
         return pieceColor;
     }
 
     /**
-     * @return which type of chess piece this piece is
+     * Returns the type of this piece (king, queen, rook, bishop, knight, pawn).
+     *
+     * @return the piece type
      */
     public PieceType getPieceType() {
         return type;
@@ -58,11 +65,12 @@ public class ChessPiece {
     }
 
     /**
-     * Calculates all the positions a chess piece can move to
-     * Does not take into account moves that are illegal due to leaving the king in
-     * danger
+     * Returns all pseudo-legal moves for this piece from the given position. Does not filter out
+     * moves that would leave the king in check (that is done by ChessGame.validMoves).
      *
-     * @return Collection of valid moves
+     * @param board      the current board
+     * @param myPosition the square this piece is on
+     * @return collection of moves this piece can make from myPosition (may include moves that put own king in check)
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         return switch (type) {
@@ -75,6 +83,7 @@ public class ChessPiece {
         };
     }
 
+    /** Sliding moves (rook, bishop, queen): follow each direction until blocked or capture. */
     private Collection<ChessMove> slidingMoves(ChessBoard board, ChessPosition pos, int[][] directions) {
         Collection<ChessMove> moves = new ArrayList<>();
         int row = pos.getRow(), col = pos.getColumn();
@@ -92,6 +101,7 @@ public class ChessPiece {
         return moves;
     }
 
+    /** Fixed-step moves (king, knight): one step per direction, no sliding. */
     private Collection<ChessMove> fixedMoves(ChessBoard board, ChessPosition pos, int[][] offsets) {
         Collection<ChessMove> moves = new ArrayList<>();
         int row = pos.getRow(), col = pos.getColumn();
@@ -108,6 +118,7 @@ public class ChessPiece {
         return moves;
     }
 
+    /** Pawn moves: forward one or two, diagonal capture, promotion on last rank. */
     private Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition pos) {
         Collection<ChessMove> moves = new ArrayList<>();
         int row = pos.getRow(), col = pos.getColumn();
@@ -137,10 +148,12 @@ public class ChessPiece {
         return moves;
     }
 
+    /** True if (r, c) is on the board (1–8). */
     private boolean inBounds(int r, int c) {
         return r >= 1 && r <= 8 && c >= 1 && c <= 8;
     }
 
+    /** Adds one move or, if promote is true, four promotion moves (queen, rook, bishop, knight). */
     private void addMoveOrPromotions(Collection<ChessMove> moves, ChessPosition from, ChessPosition to, boolean promote) {
         if (promote) {
             for (PieceType pt : new PieceType[]{PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP, PieceType.KNIGHT}) {

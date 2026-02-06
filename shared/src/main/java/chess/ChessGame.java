@@ -5,10 +5,10 @@ import java.util.Collection;
 import java.util.Objects;
 
 /**
- * For a class that can manage a chess game, making moves on a board
+ * Manages a chess game: executes moves, tracks turn, and reports check, checkmate, and stalemate.
+ * A new game starts with the default board and white to move.
  * <p>
- * Note: You can add to this class, but you may not alter
- * signature of the existing methods.
+ * Note: You can add to this class, but you may not alter the signature of the existing methods.
  */
 public class ChessGame {
 
@@ -22,43 +22,44 @@ public class ChessGame {
     }
 
     /**
-     * @return Which team's turn it is
+     * Returns which team's turn it is.
+     *
+     * @return the team color whose turn it is
      */
     public TeamColor getTeamTurn() {
         return teamTurn;
     }
 
     /**
-     * Set's which teams turn it is
+     * Sets which team's turn it is.
      *
-     * @param team the team whose turn it is
+     * @param team the team color whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
         this.teamTurn = team;
     }
 
-    /**
-     * Enum identifying the 2 possible teams in a chess game
-     */
+    /** The two teams in a chess game. */
     public enum TeamColor {
         WHITE,
         BLACK;
 
-        /** Returns the other team color. */
+        /** Returns the opposite team color. */
         TeamColor opposite() {
             return this == WHITE ? BLACK : WHITE;
         }
     }
 
+    /** Board row/column bounds (1-based, inclusive). */
     private static final int BOARD_MIN = 1;
     private static final int BOARD_MAX = 8;
 
     /**
-     * Gets a valid moves for a piece at the given location
+     * Returns all legal moves for the piece at the given position. Excludes moves that would leave
+     * the moving team's king in check.
      *
-     * @param startPosition the piece to get valid moves for
-     * @return Set of valid moves for requested piece, or null if no piece at
-     * startPosition
+     * @param startPosition the square containing the piece
+     * @return the collection of valid moves, or null if there is no piece at startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = board.getPiece(startPosition);
@@ -76,10 +77,11 @@ public class ChessGame {
     }
 
     /**
-     * Makes a move in a chess game
+     * Executes the given move if it is legal (piece present, correct turn, and move is valid).
+     * Updates the board and switches the turn to the other team.
      *
-     * @param move chess move to perform
-     * @throws InvalidMoveException if move is invalid
+     * @param move the move to perform
+     * @throws InvalidMoveException if there is no piece at the start, wrong team moves, or move is not valid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPiece piece = board.getPiece(move.getStartPosition());
@@ -92,59 +94,57 @@ public class ChessGame {
     }
 
     /**
-     * Determines if the given team is in check
+     * Returns whether the given team's king is under attack by an opposing piece.
      *
-     * @param teamColor which team to check for check
-     * @return True if the specified team is in check
+     * @param teamColor the team to check
+     * @return true if that team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
         return isInCheckOnBoard(board, teamColor);
     }
 
     /**
-     * Determines if the given team is in checkmate
+     * Returns whether the given team is in checkmate (in check with no legal move to escape).
      *
-     * @param teamColor which team to check for checkmate
-     * @return True if the specified team is in checkmate
+     * @param teamColor the team to check
+     * @return true if that team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
         return isInCheck(teamColor) && !hasAnyValidMove(teamColor);
     }
 
     /**
-     * Determines if the given team is in stalemate, which here is defined as having
-     * no valid moves while not in check.
+     * Returns whether the given team is in stalemate: not in check but has no legal moves.
      *
-     * @param teamColor which team to check for stalemate
-     * @return True if the specified team is in stalemate, otherwise false
+     * @param teamColor the team to check
+     * @return true if that team is in stalemate
      */
     public boolean isInStalemate(TeamColor teamColor) {
         return !isInCheck(teamColor) && !hasAnyValidMove(teamColor);
     }
 
     /**
-     * Sets this game's chessboard with a given board
+     * Replaces this game's board with the given board.
      *
-     * @param board the new board to use
+     * @param board the new board (can be null)
      */
     public void setBoard(ChessBoard board) {
         this.board = board;
     }
 
     /**
-     * Gets the current chessboard
+     * Returns the current chessboard.
      *
-     * @return the chessboard
+     * @return the board (may be null if setBoard(null) was called)
      */
     public ChessBoard getBoard() {
         return board;
     }
 
     /**
-     * Applies the given move to the board. Moves the piece from start to end;
-     * if the move specifies a promotion piece, places the promoted piece instead.
+     * Applies the move to the given board: clears the start square and places the piece (or promoted piece) on the end square.
      *
-     * @param board the board to modify
+     * @param board the board to modify (not null)
      * @param move  the move to apply
      */
     private void applyMoveToBoard(ChessBoard board, ChessMove move) {
@@ -158,12 +158,11 @@ public class ChessGame {
     }
 
     /**
-     * Returns the position of the king of the given color on the board,
-     * or null if no king is found.
+     * Finds the square containing the king of the given color.
      *
      * @param board the board to search
-     * @param color the team color of the king to find
-     * @return the king's position, or null
+     * @param color the team that owns the king
+     * @return the king's position, or null if not found
      */
     private ChessPosition findKing(ChessBoard board, TeamColor color) {
         for (int row = BOARD_MIN; row <= BOARD_MAX; row++) {
@@ -179,12 +178,11 @@ public class ChessGame {
     }
 
     /**
-     * Returns true if the given team's king could be captured by an opposing
-     * piece on the given board state.
+     * Returns whether the given team's king is attacked by any opposing piece on the given board.
      *
      * @param board     the board state to evaluate
-     * @param teamColor the team to check for being in check
-     * @return true if that team's king is under attack
+     * @param teamColor the team whose king to check
+     * @return true if that team is in check on this board
      */
     private boolean isInCheckOnBoard(ChessBoard board, TeamColor teamColor) {
         ChessPosition kingPos = findKing(board, teamColor);
@@ -205,10 +203,10 @@ public class ChessGame {
     }
 
     /**
-     * Returns true if the given team has at least one valid move available.
+     * Returns whether the given team has any legal move.
      *
      * @param teamColor the team to check
-     * @return true if any piece of that team has valid moves
+     * @return true if at least one piece of that team has a valid move
      */
     private boolean hasAnyValidMove(TeamColor teamColor) {
         for (int row = BOARD_MIN; row <= BOARD_MAX; row++) {

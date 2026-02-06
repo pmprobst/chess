@@ -1,10 +1,10 @@
 package chess;
 
 /**
- * Represents moving a chess piece on a chessboard
+ * A single move: from one square to another, with an optional pawn promotion type.
+ * If the move is not a pawn promotion, promotionPiece is null.
  * <p>
- * Note: You can add to this class, but you may not alter
- * signature of the existing methods.
+ * Note: You can add to this class, but you may not alter the signature of the existing methods.
  */
 public class ChessMove {
 
@@ -12,6 +12,13 @@ public class ChessMove {
     private final ChessPosition endPosition;
     private final ChessPiece.PieceType promotionPiece;
 
+    /**
+     * Creates a move from start to end, with optional promotion type for pawn moves to the last rank.
+     *
+     * @param startPosition  the square the piece moves from
+     * @param endPosition    the square the piece moves to
+     * @param promotionPiece the piece type to promote to (QUEEN, ROOK, BISHOP, KNIGHT), or null if not a promotion
+     */
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
         this.startPosition = startPosition;
@@ -20,24 +27,27 @@ public class ChessMove {
     }
 
     /**
-     * @return ChessPosition of starting location
+     * Returns the starting square of this move.
+     *
+     * @return the start position
      */
     public ChessPosition getStartPosition() {
         return startPosition;
     }
 
     /**
-     * @return ChessPosition of ending location
+     * Returns the destination square of this move.
+     *
+     * @return the end position
      */
     public ChessPosition getEndPosition() {
         return endPosition;
     }
 
     /**
-     * Gets the type of piece to promote a pawn to if pawn promotion is part of this
-     * chess move
+     * Returns the promotion piece type when this move is a pawn promotion, or null otherwise.
      *
-     * @return Type of piece to promote a pawn to, or null if no promotion
+     * @return QUEEN, ROOK, BISHOP, or KNIGHT for promotion; null if not a promotion move
      */
     public ChessPiece.PieceType getPromotionPiece() {
         return promotionPiece;

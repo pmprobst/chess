@@ -3,23 +3,25 @@ package chess;
 import java.util.Arrays;
 
 /**
- * A chessboard that can hold and rearrange chess pieces.
+ * An 8x8 chessboard that holds chess pieces. Rows and columns are 1-based (1–8).
  * <p>
- * Note: You can add to this class, but you may not alter
- * signature of the existing methods.
+ * Note: You can add to this class, but you may not alter the signature of the existing methods.
  */
 public class ChessBoard {
 
     private ChessPiece[][] squares;
+
+    /** Creates an empty 8x8 board. */
     public ChessBoard() {
         squares = new ChessPiece[8][8];
     }
 
     /**
-     * Adds a chess piece to the chessboard
+     * Places a piece on the board at the given position. Use null for piece to clear the square.
      *
-     * @param position where to add the piece to
-     * @param piece    the piece to add
+     * @param position the square (row and column 1–8)
+     * @param piece    the piece to place, or null to clear the square
+     * @throws IllegalArgumentException if position is null or out of bounds
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
         validatePosition(position);
@@ -29,11 +31,11 @@ public class ChessBoard {
     }
 
     /**
-     * Gets a chess piece on the chessboard
+     * Returns the piece at the given position, or null if the square is empty.
      *
-     * @param position The position to get the piece from
-     * @return Either the piece at the position, or null if no piece is at that
-     * position
+     * @param position the square (row and column 1–8)
+     * @return the piece at that position, or null
+     * @throws IllegalArgumentException if position is null or out of bounds
      */
     public ChessPiece getPiece(ChessPosition position) {
         validatePosition(position);
@@ -60,8 +62,7 @@ public class ChessBoard {
     }
 
     /**
-     * Returns a new board with the same piece placement as this board.
-     * Piece references are shared; the board layout is independent.
+     * Returns a new board with the same piece layout. Piece references are shared; only the grid is copied.
      *
      * @return a copy of this board
      */
@@ -75,10 +76,7 @@ public class ChessBoard {
         return copy;
     }
 
-    /**
-     * Sets the board to the default starting board
-     * (How the game of chess normally starts)
-     */
+    /** Clears the board and sets up the standard starting position (all pieces on ranks 1, 2, 7, 8). */
     public void resetBoard() {
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
@@ -86,7 +84,7 @@ public class ChessBoard {
             }
         }
 
-        //position pawns
+        // Pawns
         for (int col = 1; col <= 8; col++) {
             addPiece(new ChessPosition(2, col),
                     new ChessPiece(ChessGame.TeamColor.WHITE,
@@ -96,7 +94,7 @@ public class ChessBoard {
                             ChessPiece.PieceType.PAWN));
         }
 
-        //add rooks
+        // Rooks
         addPiece(new ChessPosition(1,1),
                 new ChessPiece(ChessGame.TeamColor.WHITE,
                         ChessPiece.PieceType.ROOK));
@@ -110,7 +108,7 @@ public class ChessBoard {
                 new ChessPiece(ChessGame.TeamColor.BLACK,
                         ChessPiece.PieceType.ROOK));
 
-        //add knights
+        // Knights
         addPiece(new ChessPosition(1, 2),
                 new ChessPiece(ChessGame.TeamColor.WHITE,
                         ChessPiece.PieceType.KNIGHT));
@@ -124,7 +122,7 @@ public class ChessBoard {
                 new ChessPiece(ChessGame.TeamColor.BLACK,
                         ChessPiece.PieceType.KNIGHT));
 
-        //add bishops
+        // Bishops
         addPiece(new ChessPosition(1, 3),
                 new ChessPiece(ChessGame.TeamColor.WHITE,
                         ChessPiece.PieceType.BISHOP));
@@ -138,7 +136,7 @@ public class ChessBoard {
                 new ChessPiece(ChessGame.TeamColor.BLACK,
                         ChessPiece.PieceType.BISHOP));
 
-        // Place queens
+        // Queens
         addPiece(new ChessPosition(1, 4),
                 new ChessPiece(ChessGame.TeamColor.WHITE,
                         ChessPiece.PieceType.QUEEN));
@@ -146,7 +144,7 @@ public class ChessBoard {
                 new ChessPiece(ChessGame.TeamColor.BLACK,
                         ChessPiece.PieceType.QUEEN));
 
-        // Place kings
+        // Kings
         addPiece(new ChessPosition(1, 5),
                 new ChessPiece(ChessGame.TeamColor.WHITE,
                         ChessPiece.PieceType.KING));
