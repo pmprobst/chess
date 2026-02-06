@@ -55,7 +55,8 @@ public class ChessGame {
     private static final int BOARD_MAX = 8;
 
     /**
-     * Returns all legal moves for the piece at the given position. Excludes moves that would leave
+     * Returns all legal moves for the piece at the given position. 
+     * Excludes moves that would leave
      * the moving team's king in check.
      *
      * @param startPosition the square containing the piece
@@ -77,7 +78,8 @@ public class ChessGame {
     }
 
     /**
-     * Executes the given move if it is legal (piece present, correct turn, and move is valid).
+     * Executes the given move if it is legal (piece present, correct turn, 
+     * and move is valid).
      * Updates the board and switches the turn to the other team.
      *
      * @param move the move to perform
